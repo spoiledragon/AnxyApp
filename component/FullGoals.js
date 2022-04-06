@@ -12,26 +12,50 @@ import {
 } from 'react-native';
 import Goal from './Goal';
 
-const FullGoals = () => {
+const FullGoals = props => {
   const [goal, setgoal] = useState();
   const [goalItems, setgoalItems] = useState([]);
+  const ID = props.id;
+  var goals = [];
 
   const handleAddgoal = () => {
     if (goal != '') {
       setgoalItems([...goalItems, goal]);
       setgoal(null);
-      storeData(goalItems);
+      //sendGoal(goal);
     }
+  };
+
+  const getData = () => {
+    var xhttp = new XMLHttpRequest();
+    let items=[];
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        setgoalItems (JSON.parse(xhttp.responseText));
+      
+      }
+    };
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/Goals.php?userID=' + ID,
+    );
+
+
+    xhttp.send();
   };
 
   const completegoal = index => {
     let itemsCopy = [...goalItems];
     itemsCopy.splice(index, 1);
     setgoalItems(itemsCopy);
-    storeData(goalItems);
+    //deleteGoal(index);
   };
 
   //Funciones Mas complejas
+
+  {
+    /*
+
   const storeData = async (value) => {
     try {
       const jsonValue = JSON.stringify(value)
@@ -40,19 +64,10 @@ const FullGoals = () => {
       // saving error
     }
   };
+
+*/
+  }
   //RECUPERAR DATOS
-  const getData = async () => {
-    try {
-      AsyncStorage.getItem('@UserGoals').then(value => {
-        if (value != null) {
-          let userGoal = JSON.parse(value);
-          setgoalItems(userGoal);
-        }
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   useEffect(() => {
     getData();
@@ -76,7 +91,7 @@ const FullGoals = () => {
                 <TouchableOpacity
                   key={index}
                   onPress={() => completegoal(index)}>
-                  <Goal text={item} />
+                  <Goal text={item.Goal} />
                 </TouchableOpacity>
               );
             })}

@@ -29,6 +29,7 @@ const ProfileCard = props => {
         <Divider orientation="vertical" marginLeft={10} />
         <View style={styles.cajatex}>
           <Text style={styles.text}>{props.name}</Text>
+          <Text style={styles.subtext}>Id: {props.id}</Text>
           <Text style={styles.subtext}>User: {props.user}</Text>
           <Text style={styles.subtext}>Age: {props.age}</Text>
         </View>

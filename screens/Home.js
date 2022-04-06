@@ -99,6 +99,7 @@ const Home = ({navigation, route}) => {
               {/*AQUI VAN EL COMPENDIO DE COSAS Y SE LAS MANDO POR PARAMETROS*/}
               <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                 <Profile
+                  id={ID}
                   user={USER}
                   name={NAME}
                   age={AGE}
@@ -160,7 +161,7 @@ const Home = ({navigation, route}) => {
         {/* FIN DEL HOME*/}
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
           {/* GOALS*/}
-          <FullGoals />
+          <FullGoals  id={ID}/>
         </TabView.Item>
 
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
