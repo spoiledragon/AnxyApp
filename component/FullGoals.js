@@ -13,10 +13,15 @@ import {
 import Goal from './Goal';
 
 const FullGoals = props => {
+
+  
   const [goal, setgoal] = useState();
   const [goalItems, setgoalItems] = useState([]);
   const ID = props.id;
-  var goals = [];
+
+  useEffect(() => {
+    getData();
+  },[ID]);
 
   const handleAddgoal = () => {
     if (goal != '') {
@@ -28,11 +33,10 @@ const FullGoals = props => {
 
   const getData = () => {
     var xhttp = new XMLHttpRequest();
-    let items=[];
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         setgoalItems (JSON.parse(xhttp.responseText));
-      
+        console.log(goalItems);
       }
     };
     xhttp.open(
@@ -69,9 +73,7 @@ const FullGoals = props => {
   }
   //RECUPERAR DATOS
 
-  useEffect(() => {
-    getData();
-  }, []);
+ 
 
   return (
     <View style={styles.container}>
