@@ -6,10 +6,10 @@ import {
   ImageBackground,
   Image,
   Dimensions,
-  TouchableOpacityBase,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import Btn from '../component/Btn';
 import {Button, Icon, Tile} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -131,17 +131,14 @@ const Login = ({navigation}) => {
       </View>
       <View style={styles.container_Button}>
         <Button
-          title="Register"
-          buttonStyle={styles.boton}
-          titleStyle={{color: 'white', letterSpacing: 5}}
-          onPress={btnRegister}
-        />
-        <Button
           title="Login"
           buttonStyle={styles.boton}
           titleStyle={{color: 'white', letterSpacing: 5}}
           onPress={btnLogin}
         />
+        <TouchableOpacity onPress={btnRegister}>
+          <Text>Registrar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderWidth: 2,
     padding: 1,
-    width:350,
+    width: 350,
     borderRadius: 25,
     backgroundColor: 'white',
     borderColor: '#1a1a1a',

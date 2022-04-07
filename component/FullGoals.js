@@ -7,36 +7,80 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Keyboard,
   ScrollView,
 } from 'react-native';
 import Goal from './Goal';
 
 const FullGoals = props => {
-
-  
   const [goal, setgoal] = useState();
+  const [goaltype, setgoaltype] = useState('short');
   const [goalItems, setgoalItems] = useState([]);
   const ID = props.id;
 
   useEffect(() => {
     getData();
-  },[ID]);
+  }, [ID]);
 
   const handleAddgoal = () => {
-    {/*COMENTARIO  Editado*/}
+    {
+      /*COMENTARIO  Editado*/
+    }
     if (goal != '') {
       setgoalItems([...goalItems, goal]);
       setgoal(null);
-      //sendGoal(goal);
+      sendGoal();
     }
+  };
+
+  const deleteGoal = index => {
+    var xhttp = new XMLHttpRequest();
+    let ArraytoDelete = goalItems[index];
+    console.log(ArraytoDelete.id);
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(xhttp.responseText);
+        getData();
+      }
+    };
+   
+    
+    xhttp.open(
+        'GET',
+        'https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id,
+      );
+
+      console.log('https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id)
+  
+
+    xhttp.send();
+  };
+
+  const sendGoal = () => {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(xhttp.responseText);
+        getData();
+      }
+    };
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/sendGoals.php?userID=' +
+        ID +
+        '&goal=' +
+        goal +
+        '&goaltype=' +
+        goaltype,
+    );
+
+    xhttp.send();
   };
 
   const getData = () => {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        setgoalItems (JSON.parse(xhttp.responseText));
+        setgoalItems(JSON.parse(xhttp.responseText));
         console.log(goalItems);
       }
     };
@@ -45,7 +89,6 @@ const FullGoals = props => {
       'https://spoiledragon.000webhostapp.com/AnxyApp/Goals.php?userID=' + ID,
     );
 
-
     xhttp.send();
   };
 
@@ -53,28 +96,8 @@ const FullGoals = props => {
     let itemsCopy = [...goalItems];
     itemsCopy.splice(index, 1);
     setgoalItems(itemsCopy);
-    //deleteGoal(index);
+    deleteGoal(index);
   };
-
-  //Funciones Mas complejas
-
-  {
-    /*
-
-  const storeData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value)
-      AsyncStorage.setItem('@UserGoals', jsonValue)
-    } catch (e) {
-      // saving error
-    }
-  };
-
-*/
-  }
-  //RECUPERAR DATOS
-
- 
 
   return (
     <View style={styles.container}>
