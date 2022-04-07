@@ -24,6 +24,7 @@ const FullGoals = props => {
   },[ID]);
 
   const handleAddgoal = () => {
+    {/*COMENTARIO */}
     if (goal != '') {
       setgoalItems([...goalItems, goal]);
       setgoal(null);
