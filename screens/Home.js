@@ -16,6 +16,7 @@ import Estadistica from '../component/Estadistica';
 import Alerta from '../component/Alerta';
 import FullGoals from '../component/FullGoals';
 import Alerta2 from '../component/Alerta2';
+import FullDairy from '../component/FullDairy';
 
 const Home = ({navigation, route}) => {
   const [index, setIndex] = React.useState(0);
@@ -166,7 +167,7 @@ const Home = ({navigation, route}) => {
 
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
           {/*aqui va el DIARIO*/}
-          <Dairy />
+          <FullDairy id={ID}/>
         </TabView.Item>
       </TabView>
     </>

@@ -8,32 +8,41 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import Goal from './Goal';
+import Dairy from './Dairy';
 
-const FullGoals = props => {
-  const [goal, setgoal] = useState();
-  const [goaltype, setgoaltype] = useState('short');
-  const [goalItems, setgoalItems] = useState([]);
+const FullDairy = props => {
   const ID = props.id;
+  const [dairy, setdairy] = useState();
+  const [dairydate, setdairydate] = useState("");
+  const [dairyItems, setdairyItems] = useState([]);
+
+  const getCurrentDate = () => {
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    //Alert.alert(date + '-' + month + '-' + year);
+    // You can turn it in to your desired format
+    return date + '-' + month + '-' + year; //format: dd-mm-yyyy;
+  };
 
   useEffect(() => {
     getData();
   }, [ID]);
 
-  const handleAddgoal = () => {
+  const handleAdddairy = () => {
     {
       /*COMENTARIO  Editado*/
     }
-    if (goal != '') {
-      setgoalItems([...goalItems, goal]);
-      setgoal(null);
-      sendGoal();
+    if (dairy != '') {
+      setdairyItems([...dairyItems, dairy]);
+      setdairy(null);
+      senddairy();
     }
   };
 
-  const deleteGoal = index => {
+  const deletedairy = index => {
     var xhttp = new XMLHttpRequest();
-    let ArraytoDelete = goalItems[index];
+    let ArraytoDelete = dairyItems[index];
     console.log(ArraytoDelete.id);
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -41,20 +50,18 @@ const FullGoals = props => {
         getData();
       }
     };
-   
-    
-    xhttp.open(
-        'GET',
-        'https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id,
-      );
 
-      console.log('https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id)
-  
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/deletedairys.php?dairyID=' +
+        ArraytoDelete.id,
+    );
+
 
     xhttp.send();
   };
 
-  const sendGoal = () => {
+  const senddairy = () => {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -64,14 +71,8 @@ const FullGoals = props => {
     };
     xhttp.open(
       'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/sendGoals.php?userID=' +
-        ID +
-        '&goal=' +
-        goal +
-        '&goaltype=' +
-        goaltype,
+      'spoiledragon.000webhostapp.com/AnxyApp/sendDairy.php?userID='+ID+'&content='+dairy+'&date='+getCurrentDate(),
     );
-
     xhttp.send();
   };
 
@@ -79,23 +80,23 @@ const FullGoals = props => {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        setgoalItems(JSON.parse(xhttp.responseText));
-        console.log(goalItems);
+        setdairyItems(JSON.parse(xhttp.responseText));
+        console.log(dairyItems);
       }
     };
     xhttp.open(
       'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/Goals.php?userID=' + ID,
+      'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
     );
 
     xhttp.send();
   };
 
-  const completegoal = index => {
-    let itemsCopy = [...goalItems];
+  const completedairy = index => {
+    let itemsCopy = [...dairyItems];
     itemsCopy.splice(index, 1);
-    setgoalItems(itemsCopy);
-    deleteGoal(index);
+    setdairyItems(itemsCopy);
+    deletedairy(index);
   };
 
   return (
@@ -107,16 +108,16 @@ const FullGoals = props => {
         }}
         keyboardShouldPersistTaps="handled">
         {/* Metas*/}
-        <View style={styles.goalsWrapper}>
-          <Text style={styles.sectionTitle}>Today's goals</Text>
+        <View style={styles.dairysWrapper}>
+          <Text style={styles.sectionTitle}>Today's dairys</Text>
           <View style={styles.items}>
-            {/* This is where the goals will go! */}
-            {goalItems.map((item, index) => {
+            {/* This is where the dairys will go! */}
+            {dairyItems.map((item, index) => {
               return (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => completegoal(index)}>
-                  <Goal text={item.Goal} />
+                  onPress={() => completedairy(index)}>
+                  <Dairy text={item.Content} />
                 </TouchableOpacity>
               );
             })}
@@ -124,18 +125,18 @@ const FullGoals = props => {
         </View>
       </ScrollView>
 
-      {/* Write a goal */}
+      {/* Write a dairy */}
       {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.writegoalWrapper}>
+        style={styles.writedairyWrapper}>
         <TextInput
           style={styles.input}
-          placeholder={'Write a goal'}
-          value={goal}
-          onChangeText={text => setgoal(text)}
+          placeholder={'Write a dairy'}
+          value={dairy}
+          onChangeText={text => setdairy(text)}
         />
-        <TouchableOpacity onPress={() => handleAddgoal()}>
+        <TouchableOpacity onPress={() => handleAdddairy()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
@@ -144,14 +145,14 @@ const FullGoals = props => {
     </View>
   );
 };
+export default FullDairy;
 
-export default FullGoals;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E8EAED',
   },
-  goalsWrapper: {
+  dairysWrapper: {
     paddingTop: 20,
     paddingHorizontal: 20,
   },
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
   items: {
     marginTop: 30,
   },
-  writegoalWrapper: {
+  writedairyWrapper: {
     position: 'absolute',
     bottom: 60,
     width: '100%',
