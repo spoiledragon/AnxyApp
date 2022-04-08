@@ -7,14 +7,20 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal
 } from 'react-native';
+import {SpeedDial} from 'react-native-elements';
 import Dairy from './Dairy';
 
 const FullDairy = props => {
   const ID = props.id;
   const [dairy, setdairy] = useState();
-  const [dairydate, setdairydate] = useState("");
+  const [dairydate, setdairydate] = useState('');
   const [dairyItems, setdairyItems] = useState([]);
+
+  //Modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const getCurrentDate = () => {
     var date = new Date().getDate();
@@ -22,7 +28,7 @@ const FullDairy = props => {
     var year = new Date().getFullYear();
     //Alert.alert(date + '-' + month + '-' + year);
     // You can turn it in to your desired format
-    return date + '-' + month + '-' + year; //format: dd-mm-yyyy;
+    return year + '-' + month + '-' + date; //format: dd-mm-yyyy;
   };
 
   useEffect(() => {
@@ -34,9 +40,8 @@ const FullDairy = props => {
       /*COMENTARIO  Editado*/
     }
     if (dairy != '') {
-      setdairyItems([...dairyItems, dairy]);
-      setdairy(null);
       senddairy();
+      setdairy(null);
     }
   };
 
@@ -57,6 +62,27 @@ const FullDairy = props => {
         ArraytoDelete.id,
     );
 
+    xhttp.send();
+  };
+  {
+    /*para editarlos en la BD*/
+  }
+  const editDairy = index => {
+    var xhttp = new XMLHttpRequest();
+    let ArraytoDelete = dairyItems[index];
+    console.log(ArraytoDelete.id);
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(xhttp.responseText);
+        getData();
+      }
+    };
+
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/deletedairys.php?dairyID=' +
+        ArraytoDelete.id,
+    );
 
     xhttp.send();
   };
@@ -71,8 +97,14 @@ const FullDairy = props => {
     };
     xhttp.open(
       'GET',
-      'spoiledragon.000webhostapp.com/AnxyApp/sendDairy.php?userID='+ID+'&content='+dairy+'&date='+getCurrentDate(),
+      'https://spoiledragon.000webhostapp.com/AnxyApp/sendDairy.php?userID=' +
+        ID +
+        '&content=' +
+        dairy +
+        '&date=' +
+        getCurrentDate(),
     );
+
     xhttp.send();
   };
 
@@ -81,7 +113,7 @@ const FullDairy = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         setdairyItems(JSON.parse(xhttp.responseText));
-        console.log(dairyItems);
+        //console.log(dairyItems);
       }
     };
     xhttp.open(
@@ -90,13 +122,6 @@ const FullDairy = props => {
     );
 
     xhttp.send();
-  };
-
-  const completedairy = index => {
-    let itemsCopy = [...dairyItems];
-    itemsCopy.splice(index, 1);
-    setdairyItems(itemsCopy);
-    deletedairy(index);
   };
 
   return (
@@ -109,18 +134,46 @@ const FullDairy = props => {
         keyboardShouldPersistTaps="handled">
         {/* Metas*/}
         <View style={styles.dairysWrapper}>
-          <Text style={styles.sectionTitle}>Today's dairys</Text>
+          <Text style={styles.sectionTitle}>Dairys</Text>
           <View style={styles.items}>
             {/* This is where the dairys will go! */}
             {dairyItems.map((item, index) => {
               return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => completedairy(index)}>
-                  <Dairy text={item.Content} />
+                <TouchableOpacity key={index} onPress={() => setModalVisible(!modalVisible)}>
+                  <Dairy text={item.Content} date={item.Date} />
                 </TouchableOpacity>
               );
             })}
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => setModalVisible(false)}>
+              <View style={styles.modalView}>
+                {/*AQUI VA TODO EL CONTENIDO DEL MODAL*/}
+
+                <View style={styles.textoContainter}>
+                  {/**contenido dentro del modal */}
+                  <Text>hOLA</Text>
+                </View>
+
+                {/*AQUI VA TODO EL EL SPEEDIAL */}
+                <SpeedDial
+                  isOpen={open}
+                  icon={{name: 'edit', color: '#fff'}}
+                  openIcon={{name: 'close', color: '#fff'}}
+                  onOpen={() => setOpen(!open)}
+                  onClose={() => setOpen(!open)}
+                  color={'black'}>
+                  <SpeedDial.Action
+                    icon={{name: 'save', color: '#fff'}}
+                    title="Save"
+                    onPress={() => console.log("salvar")}
+                  />
+                </SpeedDial>
+              </View>
+            </Modal>
           </View>
         </View>
       </ScrollView>
@@ -194,5 +247,23 @@ const styles = StyleSheet.create({
   },
   addText: {
     color: 'black',
+  },
+  modalView: {
+    margin: 10,
+    backgroundColor: 'white',
+    flex:1,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },textoModal:{
+color:"black"
   },
 });

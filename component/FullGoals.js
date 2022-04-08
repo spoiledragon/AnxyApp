@@ -13,6 +13,7 @@ import Goal from './Goal';
 const FullGoals = props => {
   const [goal, setgoal] = useState();
   const [goaltype, setgoaltype] = useState('short');
+  const [goaltyperender, setgoaltyperender] = useState('s');
   const [goalItems, setgoalItems] = useState([]);
   const ID = props.id;
 
@@ -80,7 +81,7 @@ const FullGoals = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         setgoalItems(JSON.parse(xhttp.responseText));
-        console.log(goalItems);
+        //console.log(goalItems);
       }
     };
     xhttp.open(
@@ -116,7 +117,7 @@ const FullGoals = props => {
                 <TouchableOpacity
                   key={index}
                   onPress={() => completegoal(index)}>
-                  <Goal text={item.Goal} />
+                  <Goal text={item.Goal} type={item.type}/>
                 </TouchableOpacity>
               );
             })}

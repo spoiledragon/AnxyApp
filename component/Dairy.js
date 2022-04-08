@@ -1,17 +1,19 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-const Dairy = (props) => {
+const Dairy = props => {
   return (
     <View style={styles.item}>
       <View style={styles.itemLeft}>
-        <View style={styles.square}></View>
+        <View style={styles.square}>
+          <Text style={styles.itemDate}>{props.date}</Text>
+        </View>
         <Text style={styles.itemText}>{props.text}</Text>
       </View>
       <View style={styles.circular}></View>
     </View>
   );
 };
-export default Dairy
+export default Dairy;
 const styles = StyleSheet.create({
   item: {
     backgroundColor: '#FFF',
@@ -28,22 +30,28 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   square: {
-    width: 24,
+    width: 80,
     height: 24,
-    backgroundColor: '#55BCF6',
-    opacity: 0.4,
-    borderRadius: 5,
-    marginRight: 15,
+    backgroundColor: '#3d8eca',
+    borderRadius:10,
+    alignItems:"center",
+    alignContent:"center",
+
   },
   itemText: {
     maxWidth: '80%',
-    color:"black"
+    color: '#544E4E',
+    textAlign:"center",
+    marginLeft:10,
+  
   },
   circular: {
-    width: 12,
-    height: 12,
-    borderColor: '#55BCF6',
-    borderWidth: 2,
-    borderRadius: 5,
+   
   },
+  itemDate:{
+    maxWidth: '80%',
+    color: '#FFF',
+    textAlign:"center",
+  }
+
 });

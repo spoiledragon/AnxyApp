@@ -45,6 +45,9 @@ const Login = ({navigation}) => {
           let user = JSON.parse(value);
           setNicknameValue(user.Username);
           setpasswordValue(user.Password);
+          if (passwordValue != '') {
+            btnLogin();
+          }
         }
       });
     } catch (e) {
@@ -107,27 +110,35 @@ const Login = ({navigation}) => {
   //lo que se ve
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Icon name="person" color="#3d8eca" size={15} style={styles.icon} />
-        <TextInput
-          style={styles.inputtext}
-          placeholder="Nickname"
-          keyboardType="default"
-          placeholderTextColor="grey"
-          value={nicknameValue}
-          onChangeText={data => setNicknameValue(data)}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Icon name="lock" color="#3d8eca" size={15} style={styles.icon} />
-        <TextInput
-          style={styles.inputtext}
-          placeholder="Password"
-          placeholderTextColor="grey"
-          value={passwordValue}
-          secureTextEntry
-          onChangeText={data => setpasswordValue(data)}
-        />
+
+
+
+
+
+    <View style={styles.containerTarjeta}>
+      <View style={styles.inputs}>
+        <View style={styles.inputContainer}>
+          <Icon name="person" color="#3d8eca" size={15} style={styles.icon} />
+          <TextInput
+            style={styles.inputtext}
+            placeholder="Nickname"
+            keyboardType="default"
+            placeholderTextColor="grey"
+            value={nicknameValue}
+            onChangeText={data => setNicknameValue(data)}
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <Icon name="lock" color="#3d8eca" size={15} style={styles.icon} />
+          <TextInput
+            style={styles.inputtext}
+            placeholder="Password"
+            placeholderTextColor="grey"
+            value={passwordValue}
+            secureTextEntry
+            onChangeText={data => setpasswordValue(data)}
+          />
+        </View>
       </View>
       <View style={styles.container_Button}>
         <Button
@@ -137,9 +148,10 @@ const Login = ({navigation}) => {
           onPress={btnLogin}
         />
         <TouchableOpacity onPress={btnRegister}>
-          <Text>Registrar</Text>
+          <Text style={styles.registrar}>Registrar</Text>
         </TouchableOpacity>
       </View>
+    </View>
     </View>
   );
 };
@@ -153,14 +165,17 @@ const styles = StyleSheet.create({
   input: {
     color: 'white',
   },
-  container: {
+  containerTarjeta: {
     flex: 1,
+    margin:5,
     flexDirection: 'column',
     backgroundColor: '#F9F9F9',
     alignContent: 'center',
     alignItems: 'center',
+    borderRadius:20,
+    borderColor:"grey",
+    
   },
-
   container_Button: {
     alignContent: 'center',
     alignItems: 'center',
@@ -213,6 +228,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.51,
     shadowRadius: 13.16,
     elevation: 5,
+  },
+  inputs: {marginTop:250,},
+  registrar:{
+    color:"#3d8eca",
+    fontSize:20,
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -3,11 +3,13 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 
 const Goal = props => {
-
+ 
   return (
     <View style={styles.item}>
       <View style={styles.itemLeft}>
-        <View style={styles.square}></View>
+        <View style={styles.square}>
+          <Text style={styles.itemText}>s</Text>
+        </View>
         <Text style={styles.itemText}>{props.text}</Text>
       </View>
       <View style={styles.circular}></View>
@@ -37,6 +39,8 @@ const styles = StyleSheet.create({
     opacity: 0.4,
     borderRadius: 5,
     marginRight: 15,
+    alignContent:"center",
+    alignItems:"center",
   },
   itemText: {
     maxWidth: '80%',
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
   circular: {
     width: 12,
     height: 12,
-    borderColor: '#55BCF6',
+    borderColor: 'green',
     borderWidth: 2,
     borderRadius: 5,
   },
