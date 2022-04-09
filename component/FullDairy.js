@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Modal
+  Modal,
 } from 'react-native';
 import {SpeedDial} from 'react-native-elements';
 import Dairy from './Dairy';
@@ -15,7 +15,9 @@ import Dairy from './Dairy';
 const FullDairy = props => {
   const ID = props.id;
   const [dairy, setdairy] = useState();
-  const [dairydate, setdairydate] = useState('');
+  const [ModalDairy, setModalDairy] = useState();
+  const [Modaldate, setModaldate] = useState('');
+  const [ModalIndex, setModalIndex] = useState('');
   const [dairyItems, setdairyItems] = useState([]);
 
   //Modal
@@ -45,45 +47,27 @@ const FullDairy = props => {
     }
   };
 
-  const deletedairy = index => {
-    var xhttp = new XMLHttpRequest();
-    let ArraytoDelete = dairyItems[index];
-    console.log(ArraytoDelete.id);
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        console.log(xhttp.responseText);
-        getData();
-      }
-    };
-
-    xhttp.open(
-      'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/deletedairys.php?dairyID=' +
-        ArraytoDelete.id,
-    );
-
-    xhttp.send();
-  };
   {
     /*para editarlos en la BD*/
   }
-  const editDairy = index => {
+  const editDairy = () => {
     var xhttp = new XMLHttpRequest();
-    let ArraytoDelete = dairyItems[index];
-    console.log(ArraytoDelete.id);
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        console.log(xhttp.responseText);
+        if (xhttp.responseText == 1);
         getData();
+        setModalVisible(false);
+        setOpen(false);
       }
     };
 
     xhttp.open(
       'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/deletedairys.php?dairyID=' +
-        ArraytoDelete.id,
+      'https://spoiledragon.000webhostapp.com/AnxyApp/editDairy.php?dairyID=' +
+        ModalIndex +
+        '&content=' +
+        ModalDairy,
     );
-
     xhttp.send();
   };
 
@@ -93,6 +77,7 @@ const FullDairy = props => {
       if (this.readyState == 4 && this.status == 200) {
         console.log(xhttp.responseText);
         getData();
+        setOpen(false);
       }
     };
     xhttp.open(
@@ -108,7 +93,34 @@ const FullDairy = props => {
     xhttp.send();
   };
 
+  const deleteDairy = () => {
+    setOpen(false);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log(xhttp.responseText);
+        getData();
+        setModalVisible(false);
+      }
+    };
+
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/deleteDairy.php?$dairyID=' +
+        ModalIndex,
+    );
+    xhttp.send();
+  };
+
+  const desplegarModal = i => {
+    setModalIndex(dairyItems[i].Id);
+    setModalDairy(dairyItems[i].Content);
+    setModaldate(dairyItems[i].Date);
+    setModalVisible(true);
+  };
+
   const getData = () => {
+    setOpen(false);
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -137,9 +149,11 @@ const FullDairy = props => {
           <Text style={styles.sectionTitle}>Dairys</Text>
           <View style={styles.items}>
             {/* This is where the dairys will go! */}
+
             {dairyItems.map((item, index) => {
+              let i = index;
               return (
-                <TouchableOpacity key={index} onPress={() => setModalVisible(!modalVisible)}>
+                <TouchableOpacity key={index} onPress={() => desplegarModal(i)}>
                   <Dairy text={item.Content} date={item.Date} />
                 </TouchableOpacity>
               );
@@ -152,10 +166,16 @@ const FullDairy = props => {
               onRequestClose={() => setModalVisible(false)}>
               <View style={styles.modalView}>
                 {/*AQUI VA TODO EL CONTENIDO DEL MODAL*/}
-
-                <View style={styles.textoContainter}>
-                  {/**contenido dentro del modal */}
-                  <Text>hOLA</Text>
+                {/**contenido dentro del modal */}
+                <Text style={styles.Modaldate}>{Modaldate}</Text>
+                <View>
+                  <TextInput
+                    style={styles.text}
+                    placeholder="Name"
+                    placeholderTextColor="grey"
+                    value={ModalDairy}
+                    onChangeText={data => setModalDairy(data)}
+                  />
                 </View>
 
                 {/*AQUI VA TODO EL EL SPEEDIAL */}
@@ -166,10 +186,15 @@ const FullDairy = props => {
                   onOpen={() => setOpen(!open)}
                   onClose={() => setOpen(!open)}
                   color={'black'}>
+                    <SpeedDial.Action
+                      icon={{name: 'delete', color: '#fff'}}
+                      title="Delete"
+                      onPress={() => deleteDairy()}
+                    />
                   <SpeedDial.Action
                     icon={{name: 'save', color: '#fff'}}
                     title="Save"
-                    onPress={() => console.log("salvar")}
+                    onPress={() => editDairy()}
                   />
                 </SpeedDial>
               </View>
@@ -179,7 +204,6 @@ const FullDairy = props => {
       </ScrollView>
 
       {/* Write a dairy */}
-      {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.writedairyWrapper}>
@@ -195,6 +219,7 @@ const FullDairy = props => {
           </View>
         </TouchableOpacity>
       </KeyboardAvoidingView>
+      {/* Uses a keyboard avoiding view which ensures the keyboard does not cover the items on screen */}
     </View>
   );
 };
@@ -251,7 +276,7 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 10,
     backgroundColor: 'white',
-    flex:1,
+    flex: 1,
     borderRadius: 20,
     padding: 35,
     alignItems: 'center',
@@ -263,7 +288,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },textoModal:{
-color:"black"
+  },
+  Modaldate: {
+    color: 'black',
+    fontSize: 30,
+  },
+  ModalText: {
+    color: 'black',
+    marginVertical: 10,
   },
 });

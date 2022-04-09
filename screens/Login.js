@@ -110,48 +110,47 @@ const Login = ({navigation}) => {
   //lo que se ve
   return (
     <View style={styles.container}>
-
-
-
-
-
-    <View style={styles.containerTarjeta}>
-      <View style={styles.inputs}>
-        <View style={styles.inputContainer}>
-          <Icon name="person" color="#3d8eca" size={15} style={styles.icon} />
-          <TextInput
-            style={styles.inputtext}
-            placeholder="Nickname"
-            keyboardType="default"
-            placeholderTextColor="grey"
-            value={nicknameValue}
-            onChangeText={data => setNicknameValue(data)}
-          />
+      <ImageBackground
+        source={require('../Imagenes/bg.jpg')}
+        style={styles.bg}>
+      <View style={styles.containerTarjeta}>
+        <View style={styles.inputs}>
+          <View style={styles.inputContainer}>
+            <Icon name="person" color="#294a63" size={15} style={styles.icon} />
+            <TextInput
+              style={styles.inputtext}
+              placeholder="Nickname"
+              keyboardType="default"
+              placeholderTextColor="grey"
+              value={nicknameValue}
+              onChangeText={data => setNicknameValue(data)}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Icon name="lock" color="#294a63" size={15} style={styles.icon} />
+            <TextInput
+              style={styles.inputtext}
+              placeholder="Password"
+              placeholderTextColor="grey"
+              value={passwordValue}
+              secureTextEntry
+              onChangeText={data => setpasswordValue(data)}
+            />
+          </View>
         </View>
-        <View style={styles.inputContainer}>
-          <Icon name="lock" color="#3d8eca" size={15} style={styles.icon} />
-          <TextInput
-            style={styles.inputtext}
-            placeholder="Password"
-            placeholderTextColor="grey"
-            value={passwordValue}
-            secureTextEntry
-            onChangeText={data => setpasswordValue(data)}
+        <View style={styles.container_Button}>
+          <Button
+            title="Login"
+            buttonStyle={styles.boton}
+            titleStyle={{color: 'white', letterSpacing: 5}}
+            onPress={btnLogin}
           />
+          <TouchableOpacity onPress={btnRegister}>
+            <Text style={styles.registrar}>Registrar</Text>
+          </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.container_Button}>
-        <Button
-          title="Login"
-          buttonStyle={styles.boton}
-          titleStyle={{color: 'white', letterSpacing: 5}}
-          onPress={btnLogin}
-        />
-        <TouchableOpacity onPress={btnRegister}>
-          <Text style={styles.registrar}>Registrar</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -165,17 +164,7 @@ const styles = StyleSheet.create({
   input: {
     color: 'white',
   },
-  containerTarjeta: {
-    flex: 1,
-    margin:5,
-    flexDirection: 'column',
-    backgroundColor: '#F9F9F9',
-    alignContent: 'center',
-    alignItems: 'center',
-    borderRadius:20,
-    borderColor:"grey",
-    
-  },
+
   container_Button: {
     alignContent: 'center',
     alignItems: 'center',
@@ -185,10 +174,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     margin: 5,
     height: 60,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: 1,
     width: 350,
-    borderRadius: 25,
+    borderRadius: 50,
     backgroundColor: 'white',
     borderColor: '#1a1a1a',
     marginTop: 20,
@@ -229,17 +218,30 @@ const styles = StyleSheet.create({
     shadowRadius: 13.16,
     elevation: 5,
   },
-  inputs: {marginTop:250,},
-  registrar:{
-    color:"#3d8eca",
-    fontSize:20,
+  inputs: {marginVertical:30,},
+  registrar: {
+    marginVertical:10,
+    color: '#294a63',
+    fontSize: 20,
+    letterSpacing:5,
   },
   container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     alignContent: 'center',
     alignItems: 'center',
+  },
+  containerTarjeta: {
+    margin: 20,
+    flexDirection: 'column',
+    alignContent: 'center',
+    alignItems: 'center',
+
+  },
+  bg: {
+    with: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').height,
   },
 });
 

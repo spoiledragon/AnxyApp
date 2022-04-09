@@ -112,16 +112,13 @@ const SinUp = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-
         <Tile
-          imageSrc={require('../Imagenes/background.png')}
-          title="Registro"
-          featured
-          caption="SpoilApp Ansiedad"
-        />
+          imageSrc={require('../Imagenes/banner.jpg')}
+          height={200}
+          />
+          <Text>Registro</Text>
         <View style={styles.inputContainer}>
           <Icon name="person" color="#294a63" size={15} style={styles.icon} />
-
           <TextInput
             style={styles.text}
             placeholder="Name"
@@ -185,7 +182,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     margin: 5,
     height: 60,
-    borderWidth: 2,
+    borderWidth: 1,
     padding: 1,
     width:350,
     borderRadius: 25,
