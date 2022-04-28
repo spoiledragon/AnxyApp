@@ -19,7 +19,7 @@ const FullDairy = props => {
   const [Modaldate, setModaldate] = useState('');
   const [ModalIndex, setModalIndex] = useState('');
   const [dairyItems, setdairyItems] = useState([]);
-
+  const [incidencias, setincidencias] = useState(1);
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -35,7 +35,20 @@ const FullDairy = props => {
 
   useEffect(() => {
     getData();
-  }, [ID]);
+    getIncidencias();
+  }, []);
+
+  const getIncidencias = () => {
+    dairyItems.map((item, index) => {
+
+      let comprobar=item.Content;
+      console.log(comprobar);
+      if ((comprobar.includes("Suici"))||(comprobar.includes("Peligro"))) {
+        setincidencias(incidencias + 1);
+        console.log("van",incidencias);
+      }
+    });
+  };
 
   const handleAdddairy = () => {
     {
@@ -186,11 +199,11 @@ const FullDairy = props => {
                   onOpen={() => setOpen(!open)}
                   onClose={() => setOpen(!open)}
                   color={'black'}>
-                    <SpeedDial.Action
-                      icon={{name: 'delete', color: '#fff'}}
-                      title="Delete"
-                      onPress={() => deleteDairy()}
-                    />
+                  <SpeedDial.Action
+                    icon={{name: 'delete', color: '#fff'}}
+                    title="Delete"
+                    onPress={() => deleteDairy()}
+                  />
                   <SpeedDial.Action
                     icon={{name: 'save', color: '#fff'}}
                     title="Save"

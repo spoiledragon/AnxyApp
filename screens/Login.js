@@ -32,7 +32,7 @@ const Login = ({navigation}) => {
         Password: passwordValue,
       };
       await AsyncStorage.setItem('@UserKeys', JSON.stringify(user));
-      console.log('Datos Almacenados', {user});
+      console.log('Info Almacenada', {user});
     } else {
       alert('please fill data');
     }

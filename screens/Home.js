@@ -17,6 +17,7 @@ import Alerta from '../component/Alerta';
 import FullGoals from '../component/FullGoals';
 import Alerta2 from '../component/Alerta2';
 import FullDairy from '../component/FullDairy';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation, route}) => {
   const [index, setIndex] = React.useState(0);
@@ -47,7 +48,9 @@ const Home = ({navigation, route}) => {
         setID(arr[0]);
         setNAME(arr[1]);
         setAGE(arr[2]);
-        setPHOTO(arr[3]);
+        if (arr[3] != '') {
+          setPHOTO(arr[3]);
+        }
         setBIBLIOGRAFIA(arr[4]);
       }
     };
@@ -59,9 +62,25 @@ const Home = ({navigation, route}) => {
     xhttp.send();
   };
 
+  //Funciones Mas complejas
+  const saveData = async () => {
+    //solo la mandare a llamar cuando logeen
+    if (USER) {
+      let user = {
+        id: ID,
+        name: NAME,
+      };
+      await AsyncStorage.setItem('@UserData', JSON.stringify(user));
+      console.log('Datos Almacenados', {user});
+    } else {
+      //nada que almacenar
+    }
+  };
+
   //FUNCIONES ESPECIALES
   useEffect(() => {
     TraeDatos();
+    saveData();
   }, [USER]);
 
   //const {nicknameValue} = route.params;
@@ -162,12 +181,12 @@ const Home = ({navigation, route}) => {
         {/* FIN DEL HOME*/}
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
           {/* GOALS*/}
-          <FullGoals  id={ID}/>
+          <FullGoals id={ID} />
         </TabView.Item>
 
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
           {/*aqui va el DIARIO*/}
-          <FullDairy id={ID}/>
+          <FullDairy id={ID} />
         </TabView.Item>
       </TabView>
     </>
@@ -226,11 +245,11 @@ const styles = StyleSheet.create({
   textoContainterBiblio: {
     borderWidth: 1,
     borderColor: 'grey',
-   marginVertical:40,
+    marginVertical: 40,
   },
   textoModalBiblio: {
     fontSize: 30,
-    textAlign: "center",
+    textAlign: 'center',
     marginVertical: 5,
     color: '#544E4E',
     fontFamily: 'sans-serif',
