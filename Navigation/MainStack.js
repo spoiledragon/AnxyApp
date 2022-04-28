@@ -9,6 +9,8 @@ import {Icon, Image} from 'react-native-elements';
 import FullGoals from '../component/FullGoals';
 import Meds from '../screens/Meds';
 import minIA from '../component/MinIA';
+import FullDairy from '../component/FullDairy';
+import Goal from '../component/Goal';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -46,6 +48,21 @@ const MainStack = () => {
             tabBarIcon: () => <Icon name="home" />,
           }}
         />
+        <Tab.Screen
+          name="Dairy"
+          component={FullDairy}
+          options={{
+            tabBarIcon: () => <Icon name="book" />,
+          }}
+        />
+        <Tab.Screen
+          name="Goals"
+          component={FullGoals}
+          options={{
+            tabBarIcon: () => <Icon name="check" />,
+          }}
+        />
+
         <Stack.Screen
           name="Meds"
           component={minIA}

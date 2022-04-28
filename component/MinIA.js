@@ -1,37 +1,36 @@
 import {StyleSheet, Text, View} from 'react-native';
-import regression from 'regression';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {LineChart} from 'react-native-chart-kit';
 import {Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SimpleLinearRegression from 'ml-regression-simple-linear';
 
 const MinIA = () => {
-  const data = [
-    //variable independiente = x
-    //variable dependiente = Y
-    //  [x, y]
-    [1, 0],
-    [1, 1],
-    [1, 2],
-    [1, 4],
-    [1, 0],
-    [2, 10],
-    [3, 20],
-    [3, 1],
-    [3, 25],
-    [3, 10],
-    [3, 20],
-    [3, 20],
-    [3, 20],
-    [3, 20],
-  ];
+  const [ID, setID] = useState(2);
 
-  let daya2 = [[1],[3],[5],[1],[3],[5],[1],[3],[5]];
-  let daya3 = [[10],[29]];
-  const result = regression.polynomial(data, {order: 3});
+  useEffect(() => {
+    getData();
+  }, []);
 
-  const yIntercept = result.equation[1];
-  console.log(result);
-  console.log(yIntercept);
+  const getData = async () => {
+    try {
+      AsyncStorage.getItem('@UserData').then(value => {
+        if (value != null) {
+          let user = JSON.parse(value);
+          setID(user.id);
+          console.log('ID DE MINIIA', ID);
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  //incidencias de suicidios
+  const x = [0.5, 1, 1.5, 2, 2.5, 3];
+  const y = [0, 1, 2, 3, 4, 5];
+  const regression = new SimpleLinearRegression(x, y);
+  console.log(regression.predict(4));
+
   return (
     <View>
       <LineChart
@@ -39,7 +38,8 @@ const MinIA = () => {
           labels: ['January', 'February', 'March', 'April', 'May', 'June'],
           datasets: [
             {
-              data: daya2,daya3
+              data: x,
+              y,
             },
           ],
         }}

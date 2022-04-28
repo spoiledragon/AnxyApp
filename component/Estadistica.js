@@ -8,21 +8,60 @@ import {
 import * as Progress from 'react-native-progress';
 import {DonutChart} from 'react-native-circular-chart';
 import React from 'react';
-
-
+import {PieChart} from 'react-native-chart-kit';
+import {Dimensions} from 'react-native';
 const Estadistica = props => {
-  const DATA = [
-    {name: 'red', value: 300, color: 'red'},
-    {name: 'yellow', value: 200, color: 'yellow'},
+  const data = [
+    {
+      name: 'Complete',
+      number: 10,
+      color: 'rgba(139, 195, 74, 1)',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Process',
+      number: 30,
+      color: 'rgba(255, 207, 77, 1)',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
+    {
+      name: 'Incomplete',
+      number: 20,
+      color: 'rgba(255, 60, 56, 1)',
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    },
   ];
 
+  const chartConfig = {
+    backgroundGradientFrom: '#1E2923',
+    backgroundGradientFromOpacity: 0,
 
+    backgroundGradientToOpacity: 0.5,
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false, // optional
+  };
 
   return (
-    
-      <View style={styles.container}>
-        <View style={styles.Tarjeta}>
-          <Progress.Circle
+    //Dimensions.get('screen').width
+    <View style={styles.container}>
+      <View style={styles.Tarjeta}>
+        <PieChart
+          data={data}
+          width={Dimensions.get('screen').width - 100}
+          height={220}
+          chartConfig={chartConfig}
+          accessor={'number'}
+          backgroundColor={'transparent'}
+          paddingLeft={'10'}
+          center={[0, 0]}
+          absolute
+        />
+        {/*  <Progress.Circle
             showsText={true}
             strokeCap={'butt'}
             color={'#32a860'}
@@ -46,18 +85,19 @@ const Estadistica = props => {
               <Text style={styles.text}>No Hechos</Text>
             </View>
           </View>
-        </View>
+           */}
       </View>
+    </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    marginBottom:10,
+    marginBottom: 10,
     alignContent: 'center',
     borderWidth: 2,
     borderColor: '#C0C0C0',
-    height: 200,
+    height: 300,
     width: 380,
     backgroundColor: '#FFF',
     borderRadius: 20,

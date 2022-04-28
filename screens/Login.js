@@ -16,7 +16,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Login = ({navigation}) => {
   const [nicknameValue, setNicknameValue] = useState('');
   const [passwordValue, setpasswordValue] = useState('');
-
+  let Data = {
+    name: '',
+    age: '',
+    id: '',
+    photo: '',
+    bibilografia: '',
+  };
   //Funciones
 
   const btnRegister = () => {
@@ -38,6 +44,12 @@ const Login = ({navigation}) => {
     }
   };
 
+  const saveData2 = async () => {
+    //solo la mandare a llamar cuando logeen
+    await AsyncStorage.setItem('@userinfo', JSON.stringify(Data));
+    console.log('Datos de Usuario', {Data});
+  };
+  //ESTA BUSCA SI HAY USUARIOS ANTES
   const getData = async () => {
     try {
       AsyncStorage.getItem('@UserKeys').then(value => {
@@ -54,6 +66,32 @@ const Login = ({navigation}) => {
       console.log(e);
     }
   };
+  //es para almacenar ya todo en memoria local
+  const TraeDatos = () => {
+    //conexcion al servidor
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        var Datos = xhttp.responseText;
+        //console.log('Estos son los datos en LoginScreen', xhttp.responseText);
+
+        var arr = Datos.split(',');
+        Data.id = arr[0];
+        Data.name = arr[1];
+        Data.age = arr[2];
+        Data.photo = arr[3];
+        Data.bibilografia = arr[4];
+
+        saveData2();
+      }
+    };
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/FullDato.php?user=' +
+        nicknameValue,
+    );
+    xhttp.send();
+  };
 
   useEffect(() => {
     getData();
@@ -68,7 +106,9 @@ const Login = ({navigation}) => {
         console.log(xhttp.responseText);
         if (xhttp.responseText == 0) {
           //usuario autentificadoy
+          //SI ENTRO
           saveData();
+          TraeDatos();
           setNicknameValue('');
           setpasswordValue('');
           navigation.navigate('Home', {pasaruser: nicknameValue});
@@ -110,46 +150,49 @@ const Login = ({navigation}) => {
   //lo que se ve
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require('../Imagenes/bg.jpg')}
-        style={styles.bg}>
-      <View style={styles.containerTarjeta}>
-        <View style={styles.inputs}>
-          <View style={styles.inputContainer}>
-            <Icon name="person" color="#294a63" size={15} style={styles.icon} />
-            <TextInput
-              style={styles.inputtext}
-              placeholder="Nickname"
-              keyboardType="default"
-              placeholderTextColor="grey"
-              value={nicknameValue}
-              onChangeText={data => setNicknameValue(data)}
-            />
+      <ImageBackground source={require('../Imagenes/bg.jpg')} style={styles.bg}>
+        <View style={styles.containerTarjeta}>
+          <View style={styles.inputs}>
+            <View style={styles.inputContainer}>
+              <Icon
+                name="person"
+                color="#294a63"
+                size={15}
+                style={styles.icon}
+              />
+              <TextInput
+                style={styles.inputtext}
+                placeholder="Nickname"
+                keyboardType="default"
+                placeholderTextColor="grey"
+                value={nicknameValue}
+                onChangeText={data => setNicknameValue(data)}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Icon name="lock" color="#294a63" size={15} style={styles.icon} />
+              <TextInput
+                style={styles.inputtext}
+                placeholder="Password"
+                placeholderTextColor="grey"
+                value={passwordValue}
+                secureTextEntry
+                onChangeText={data => setpasswordValue(data)}
+              />
+            </View>
           </View>
-          <View style={styles.inputContainer}>
-            <Icon name="lock" color="#294a63" size={15} style={styles.icon} />
-            <TextInput
-              style={styles.inputtext}
-              placeholder="Password"
-              placeholderTextColor="grey"
-              value={passwordValue}
-              secureTextEntry
-              onChangeText={data => setpasswordValue(data)}
+          <View style={styles.container_Button}>
+            <Button
+              title="Login"
+              buttonStyle={styles.boton}
+              titleStyle={{color: 'white', letterSpacing: 5}}
+              onPress={btnLogin}
             />
+            <TouchableOpacity onPress={btnRegister}>
+              <Text style={styles.registrar}>Registrar</Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.container_Button}>
-          <Button
-            title="Login"
-            buttonStyle={styles.boton}
-            titleStyle={{color: 'white', letterSpacing: 5}}
-            onPress={btnLogin}
-          />
-          <TouchableOpacity onPress={btnRegister}>
-            <Text style={styles.registrar}>Registrar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
       </ImageBackground>
     </View>
   );
@@ -218,12 +261,12 @@ const styles = StyleSheet.create({
     shadowRadius: 13.16,
     elevation: 5,
   },
-  inputs: {marginVertical:30,},
+  inputs: {marginVertical: 30},
   registrar: {
-    marginVertical:10,
+    marginVertical: 10,
     color: '#294a63',
     fontSize: 20,
-    letterSpacing:5,
+    letterSpacing: 5,
   },
   container: {
     flex: 1,
@@ -237,7 +280,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignContent: 'center',
     alignItems: 'center',
-
   },
   bg: {
     with: Dimensions.get('screen').width,

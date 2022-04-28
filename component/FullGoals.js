@@ -9,17 +9,14 @@ import {
   ScrollView,
 } from 'react-native';
 import Goal from './Goal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FullGoals = props => {
   const [goal, setgoal] = useState();
   const [goaltype, setgoaltype] = useState('short');
   const [goaltyperender, setgoaltyperender] = useState('s');
   const [goalItems, setgoalItems] = useState([]);
-  const ID = props.id;
-
-  useEffect(() => {
-    getData();
-  }, [ID]);
+  const [ID, setID] = useState();
 
   const handleAddgoal = () => {
     {
@@ -39,18 +36,20 @@ const FullGoals = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(xhttp.responseText);
-        getData();
+        getgoals();
       }
     };
-   
-    
-    xhttp.open(
-        'GET',
-        'https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id,
-      );
 
-      console.log('https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID='+ArraytoDelete.id)
-  
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID=' +
+        ArraytoDelete.id,
+    );
+
+    console.log(
+      'https://spoiledragon.000webhostapp.com/AnxyApp/deleteGoals.php?goalID=' +
+        ArraytoDelete.id,
+    );
 
     xhttp.send();
   };
@@ -60,7 +59,7 @@ const FullGoals = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(xhttp.responseText);
-        getData();
+        getgoals();
       }
     };
     xhttp.open(
@@ -76,12 +75,29 @@ const FullGoals = props => {
     xhttp.send();
   };
 
-  const getData = () => {
+  const getData = async () => {
+    try {
+      AsyncStorage.getItem('@userinfo').then(value => {
+        if (value != null) {
+          let Data = JSON.parse(value);
+          setID(Data.id);
+          getgoals();
+        }
+      });
+
+      //Fin del try
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getgoals = async () => {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        setgoalItems(JSON.parse(xhttp.responseText));
-        //console.log(goalItems);
+        try {
+          setgoalItems(JSON.parse(xhttp.responseText));
+        } catch (error) {}
       }
     };
     xhttp.open(
@@ -98,6 +114,10 @@ const FullGoals = props => {
     setgoalItems(itemsCopy);
     deleteGoal(index);
   };
+
+  useEffect(() => {
+    getData();
+  }, [ID]);
 
   return (
     <View style={styles.container}>
@@ -117,7 +137,7 @@ const FullGoals = props => {
                 <TouchableOpacity
                   key={index}
                   onPress={() => completegoal(index)}>
-                  <Goal text={item.Goal} type={item.type}/>
+                  <Goal text={item.Goal} type={item.type} />
                 </TouchableOpacity>
               );
             })}

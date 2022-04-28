@@ -11,15 +11,16 @@ import {
 } from 'react-native';
 import {SpeedDial} from 'react-native-elements';
 import Dairy from './Dairy';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FullDairy = props => {
-  const ID = props.id;
+  const [ID, setID] = useState(0);
   const [dairy, setdairy] = useState();
   const [ModalDairy, setModalDairy] = useState();
   const [Modaldate, setModaldate] = useState('');
   const [ModalIndex, setModalIndex] = useState('');
   const [dairyItems, setdairyItems] = useState([]);
-  const [incidencias, setincidencias] = useState(1);
+  const [incidencias, setincidencias] = useState(0);
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
   const [open, setOpen] = React.useState(false);
@@ -33,21 +34,66 @@ const FullDairy = props => {
     return year + '-' + month + '-' + date; //format: dd-mm-yyyy;
   };
 
-  useEffect(() => {
-    getData();
-    getIncidencias();
-  }, []);
+  const getData2 = async () => {
+    try {
+      AsyncStorage.getItem('@userinfo').then(value => {
+        if (value != null) {
+          let Data = JSON.parse(value);
+          setID(Data.id);
+          console.log('ID DE DAIRY', Data.id);
+          getData();
+        }
+      });
 
-  const getIncidencias = () => {
-    dairyItems.map((item, index) => {
+      //Fin del try
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-      let comprobar=item.Content;
-      console.log(comprobar);
-      if ((comprobar.includes("Suici"))||(comprobar.includes("Peligro"))) {
-        setincidencias(incidencias + 1);
-        console.log("van",incidencias);
+  const getData = async () => {
+    setOpen(false);
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        setdairyItems(JSON.parse(xhttp.responseText));
+        //ya guardado el array comprueba que esta pasando
+        setincidencias(0);
+        let cont = 0;
+        dairyItems.map((item, index) => {
+          let comprobar = item.Content.toLowerCase();
+          if (
+            comprobar.includes('suici') ||
+            comprobar.includes('pelig') ||
+            comprobar.includes('cortar') ||
+            comprobar.includes('lastimar') ||
+            comprobar.includes('matar')
+          ) {
+            cont = cont + 1;
+            console.log('van', cont);
+          }
+        });
+
+        if (cont >= 0) {
+         
+        }
       }
-    });
+    };
+    xhttp.open(
+      'GET',
+      'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
+    );
+    xhttp.send();
+  };
+
+ 
+
+  useEffect(() => {
+    getData2();
+  }, [ID]);
+
+  const getIncidencias = async () => {
+    
   };
 
   const handleAdddairy = () => {
@@ -130,23 +176,6 @@ const FullDairy = props => {
     setModalDairy(dairyItems[i].Content);
     setModaldate(dairyItems[i].Date);
     setModalVisible(true);
-  };
-
-  const getData = () => {
-    setOpen(false);
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        setdairyItems(JSON.parse(xhttp.responseText));
-        //console.log(dairyItems);
-      }
-    };
-    xhttp.open(
-      'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
-    );
-
-    xhttp.send();
   };
 
   return (
