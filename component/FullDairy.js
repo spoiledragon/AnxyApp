@@ -34,14 +34,22 @@ const FullDairy = props => {
     return year + '-' + month + '-' + date; //format: dd-mm-yyyy;
   };
 
-  const getData2 = async () => {
+  const storeData = async (value, key) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      // saving error
+    }
+  };
+
+  const getData = async () => {
     try {
       AsyncStorage.getItem('@userinfo').then(value => {
         if (value != null) {
           let Data = JSON.parse(value);
           setID(Data.id);
           console.log('ID DE DAIRY', Data.id);
-          getData();
         }
       });
 
@@ -50,50 +58,59 @@ const FullDairy = props => {
       console.log(e);
     }
   };
-
-  const getData = async () => {
+  //esta data hace lapeticion al servidor
+  const getData2 = async () => {
     setOpen(false);
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        setdairyItems(JSON.parse(xhttp.responseText));
-        //ya guardado el array comprueba que esta pasando
-        setincidencias(0);
-        let cont = 0;
-        dairyItems.map((item, index) => {
-          let comprobar = item.Content.toLowerCase();
-          if (
-            comprobar.includes('suici') ||
-            comprobar.includes('pelig') ||
-            comprobar.includes('cortar') ||
-            comprobar.includes('lastimar') ||
-            comprobar.includes('matar')
-          ) {
-            cont = cont + 1;
-            console.log('van', cont);
-          }
-        });
-
-        if (cont >= 0) {
-         
+    try {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          setdairyItems(JSON.parse(xhttp.responseText));
+          get_and_SaveIncidencias();
         }
-      }
-    };
-    xhttp.open(
-      'GET',
-      'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
-    );
-    xhttp.send();
+      };
+      xhttp.open(
+        'GET',
+        'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
+      );
+      xhttp.send();
+    } catch (error) {}
   };
 
- 
-
   useEffect(() => {
+    getData();
     getData2();
   }, [ID]);
 
-  const getIncidencias = async () => {
-    
+  const get_and_SaveIncidencias = () => {
+    //ya guardado el array comprueba que esta pasando
+    setincidencias(0);
+    let cont = 0;
+    dairyItems.map((item, index) => {
+      let comprobar = item.Content.toLowerCase();
+      console.log(comprobar);
+      if (
+        comprobar.includes('suici') ||
+        comprobar.includes('mata') ||
+        comprobar.includes('muer') ||
+        comprobar.includes('triste') ||
+        comprobar.includes('desaparecer') ||
+        comprobar.includes('peligro')
+      ) {
+        cont = cont + 1;
+      }
+    });
+    console.log('tiene ', cont);
+    if (cont >= 1) {
+      setincidencias(cont);
+      //solo la mandare a llamar cuando logeen
+      let userIncidencias = {
+        cantidad: cont,
+      };
+      storeData(userIncidencias, '@UserReport');
+      console.log('Info Almacenada', {userIncidencias});
+    }
+    //significa que si hay incidencias
   };
 
   const handleAdddairy = () => {
@@ -135,7 +152,7 @@ const FullDairy = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(xhttp.responseText);
-        getData();
+        getData2();
         setOpen(false);
       }
     };

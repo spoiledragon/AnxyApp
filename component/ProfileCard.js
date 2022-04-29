@@ -34,60 +34,6 @@ const ProfileCard = props => {
           <Text style={styles.subtext}>Age: {props.age}</Text>
         </View>
       </View>
-      <Divider marginTop={5} />
-      <View style={styles.BarrasBox}>
-        <Avatar
-          size={30}
-          rounded
-          size="medium"
-          source={require('../Imagenes/animo.png')}
-        />
-        <View style={styles.Barras}>
-          <Progress.Bar
-            progress={props.bar1}
-            height={20}
-            width={260}
-            color={'#32a860'}
-            borderRadius={25}
-          />
-        </View>
-      </View>
-      <Divider marginTop={5} />
-      <View style={styles.BarrasBox}>
-        <Avatar
-          size={30}
-          rounded
-          size="medium"
-          source={require('../Imagenes/alerta.png')}
-        />
-        <View style={styles.Barras}>
-          <Progress.Bar
-            progress={props.bar2}
-            height={20}
-            width={260}
-            color={'#de5981'}
-            borderRadius={25}
-          />
-        </View>
-      </View>
-      <Divider marginTop={5} />
-      <View style={styles.BarrasBox}>
-        <Avatar
-          size={30}
-          rounded
-          size="medium"
-          source={require('../Imagenes/happy.png')}
-        />
-        <View style={styles.Barras}>
-          <Progress.Bar
-            progress={props.bar3}
-            height={20}
-            width={260}
-            color={'#32a860'}
-            borderRadius={25}
-          />
-        </View>
-      </View>
     </View>
   );
 };
@@ -124,7 +70,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
 
     borderColor: '#C0C0C0',
-    height: 350,
+    height: 120,
     width: 380,
     backgroundColor: '#FFF',
     borderRadius: 20,

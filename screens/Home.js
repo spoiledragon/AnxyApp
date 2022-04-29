@@ -51,13 +51,13 @@ const Home = ({navigation, route}) => {
             );
           }
           setBIBLIOGRAFIA(Data.bibilografia);
-          console.log('ID DE HomePage', Data.id);
+          //console.log('ID DE HomePage', Data.id);
         }
       });
 
       //Fin del try
     } catch (e) {
-      console.log(e);
+      //console.log(e);
     }
   };
 

@@ -65,7 +65,7 @@ const MainStack = () => {
 
         <Stack.Screen
           name="Meds"
-          component={minIA}
+          component={Meds}
           options={{
             tabBarIcon: () => <Icon name="person" />,
           }}
