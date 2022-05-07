@@ -1,76 +1,118 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import Home from '../screens/Home';
+
 import Login from '../screens/Login';
 import SingUp from '../screens/SinUp';
 import {Icon, Image} from 'react-native-elements';
-import FullGoals from '../component/FullGoals';
+import FullGoals from '../screens/FullGoals';
 import Meds from '../screens/Meds';
-import minIA from '../component/MinIA';
-import FullDairy from '../component/FullDairy';
-import Goal from '../component/Goal';
+
+import FullDairy from '../screens/FullDairy';
+import NewHome from '../screens/newHome';
+import {Button} from 'react-native-elements';
+import {Dimensions, TouchableOpacity, View, Text} from 'react-native';
+import MinIA from '../component/MinIA';
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const MainStack = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator headerMode="screen" screenOptions={{headerShown: false}}>
+      <Stack.Navigator headerMode="screen" screenOptions={{headerShown: true}}>
         <Stack.Screen
           name="Login"
           component={Login}
           options={{
-            tabBarStyle: {
-              display: 'none',
+            headerShown: false,
+            title: 'My home',
+            headerStyle: {
+              backgroundColor: '#f4511e',
             },
-            tabBarVisible: false, //like this
-            tabBarButton: props => null, //this is additional if you want to hide the tab element from the bottom nav
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+        <Stack.Screen name="SingUp" component={SingUp} />
+
+        <Stack.Screen
+          name="Home2"
+          component={NewHome}
+          options={{
+            disableBackButtonOverride: false,
+            headerTitleAlign: 'center',
+            headerBlurEffect: 'systemMaterial',
+            headerShown: false,
           }}
         />
         <Stack.Screen
-          name="SingUp"
-          component={SingUp}
-          options={{
-            tabBarStyle: {
-              display: 'none',
-            },
-            tabBarVisible: false, //like this
-            tabBarButton: props => null, //this is additional if you want to hide the tab element from the bottom nav
-          }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            tabBarIcon: () => <Icon name="home" />,
-          }}
-        />
-        <Tab.Screen
           name="Dairy"
           component={FullDairy}
           options={{
-            tabBarIcon: () => <Icon name="book" />,
+            headerShown: true,
+            title: 'Felling bad?',
+            headerStyle: {
+              backgroundColor: 'black',
+            },
+            headerTitleAlign: 'center',
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
           }}
         />
-        <Tab.Screen
+        <Stack.Screen
           name="Goals"
           component={FullGoals}
           options={{
-            tabBarIcon: () => <Icon name="check" />,
+            headerShown: true,
+            title: 'Lets try something',
+            headerStyle: {
+              backgroundColor: '#fff',
+            },
+            headerTitleAlign: 'center',
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
           }}
         />
-
         <Stack.Screen
           name="Meds"
           component={Meds}
           options={{
-            tabBarIcon: () => <Icon name="person" />,
+            headerShown: true,
+            title: 'Heal is Important',
+            headerStyle: {
+              backgroundColor: '#f4511e',
+            },
+            headerTitleAlign: 'center',
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
           }}
         />
-      </Tab.Navigator>
+        <Stack.Screen
+          name="Report"
+          component={MinIA}
+          options={{
+            headerShown: true,
+            title: 'Lets Watch This',
+            headerStyle: {
+              backgroundColor: '#f4511e',
+            },
+            headerTitleAlign: 'center',
+            headerTintColor: 'white',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

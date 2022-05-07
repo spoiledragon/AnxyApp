@@ -7,6 +7,9 @@ import {
   ScrollView,
   Alert,
   ToastAndroid,
+  KeyboardAvoidingView,
+  ImageBackground,
+  Dimensions,
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,7 +21,6 @@ const SinUp = ({navigation}) => {
   const [nicknameValue, setnicknameValue] = useState('');
   const [ageValue, setAgeValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
-
 
   const validate = () => {
     if (!nameValue) {
@@ -63,7 +65,7 @@ const SinUp = ({navigation}) => {
           if (xhttp.responseText == 0) {
             console.log('No Se Registro');
             //No se Registro
-            this.setState.Codigo = 'Error de Registro';
+            
             //showToastWithGravity('Error de Registro');
             Alert.alert('Error de Registro');
           }
@@ -112,13 +114,14 @@ const SinUp = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ImageBackground source={require('../Imagenes/bg.jpg')} style={styles.bg}>
         <Tile
-          imageSrc={require('../Imagenes/banner.jpg')}
-          height={200}
-          />
-          <Text>Registro</Text>
+          imageSrc={require('../Imagenes/logtipo.png')}
+          height={200}        
+          titleStyle={{fontSize: 15, textAlign: 'center',color:"black"}}
+        />
         <View style={styles.inputContainer}>
-          <Icon name="person" color="#294a63" size={15} style={styles.icon} />
+          <Icon name="person" color="#FA8C1A" size={15} style={styles.icon} />
           <TextInput
             style={styles.text}
             placeholder="Name"
@@ -128,7 +131,7 @@ const SinUp = ({navigation}) => {
           />
         </View>
         <View style={styles.inputContainer}>
-          <Icon name="glasses" color="#294a63" size={15} style={styles.icon} />
+          <Icon name="glasses" color="#FA8C1A" size={15} style={styles.icon} />
           <TextInput
             style={styles.text}
             placeholder="Nickname"
@@ -138,8 +141,14 @@ const SinUp = ({navigation}) => {
             onChangeText={data => setnicknameValue(data)}
           />
         </View>
+
         <View style={styles.inputContainer}>
-          <Icon name="lock-closed" color="#294a63" size={14} style={styles.icon} />
+          <Icon
+            name="lock-closed"
+            color="#FA8C1A"
+            size={14}
+            style={styles.icon}
+          />
           <TextInput
             style={styles.text}
             placeholder="Password"
@@ -151,7 +160,7 @@ const SinUp = ({navigation}) => {
           />
         </View>
         <View style={styles.inputContainer}>
-          <Icon name="aperture" color="#294a63" size={15} style={styles.icon} />
+          <Icon name="aperture" color="#FA8C1A" size={15} style={styles.icon} />
           <TextInput
             style={styles.text}
             placeholder="Age"
@@ -161,21 +170,20 @@ const SinUp = ({navigation}) => {
             onChangeText={data => setAgeValue(data)}
           />
         </View>
-          <Btn
-            text="Registrar"
-            onPress={() => {
-              btnRegister();
-            }}
-          />
-      
-      
+        <Btn
+          text="Registrar"
+          onPress={() => {
+            btnRegister();
+          }}
+        />
+      </ImageBackground>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   text: {
     flex: 1,
-    color:"black"
+    color: 'black',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -184,11 +192,11 @@ const styles = StyleSheet.create({
     height: 60,
     borderWidth: 1,
     padding: 1,
-    width:350,
+    width: 350,
     borderRadius: 25,
     backgroundColor: 'white',
     borderColor: '#1a1a1a',
-    marginTop: 20,
+
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -205,14 +213,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     backgroundColor: 'white',
-    alignContent:"center",
-    alignItems:"center",
-
+    alignContent: 'center',
+    alignItems: 'center',
   },
   icon: {
     padding: 20,
   },
- 
+
+  bg: {
+    with: Dimensions.get('screen').width,
+    alignContent: 'center',
+    alignItems: 'center',
+    height: Dimensions.get('screen').height,
+  },
 });
 
 export default SinUp;

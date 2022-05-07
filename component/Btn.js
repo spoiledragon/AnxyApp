@@ -14,7 +14,7 @@ const Btn = props => {
 const styles = StyleSheet.create({
   ButtonContainer: {
     alignContent: 'center',
-    backgroundColor: "black",
+    backgroundColor: "#282A34",
     height: 50,
     margin: 10,
     paddingHorizontal: 20,

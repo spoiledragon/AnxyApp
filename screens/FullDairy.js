@@ -10,16 +10,18 @@ import {
   Modal,
 } from 'react-native';
 import {SpeedDial} from 'react-native-elements';
-import Dairy from './Dairy';
+import Dairy from '../component/Dairy';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const FullDairy = props => {
-  const [ID, setID] = useState(0);
+const FullDairy = ({navigation, route}) => {
+  const {id} = route.params;
+  const {array} = route.params;
+  //PARA QUE TRABAJE
   const [dairy, setdairy] = useState();
   const [ModalDairy, setModalDairy] = useState();
   const [Modaldate, setModaldate] = useState('');
   const [ModalIndex, setModalIndex] = useState('');
-  const [dairyItems, setdairyItems] = useState([]);
+  const [dairyItems, setdairyItems] = useState(array);
   const [incidencias, setincidencias] = useState(0);
   //Modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -43,75 +45,25 @@ const FullDairy = props => {
     }
   };
 
-  const getData = async () => {
-    try {
-      AsyncStorage.getItem('@userinfo').then(value => {
-        if (value != null) {
-          let Data = JSON.parse(value);
-          setID(Data.id);
-          console.log('ID DE DAIRY', Data.id);
-        }
-      });
-
-      //Fin del try
-    } catch (e) {
-      console.log(e);
-    }
-  };
   //esta data hace lapeticion al servidor
-  const getData2 = async () => {
+  const getData = async () => {
     setOpen(false);
     try {
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
           setdairyItems(JSON.parse(xhttp.responseText));
-          get_and_SaveIncidencias();
         }
       };
       xhttp.open(
         'GET',
-        'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + ID,
+        'https://spoiledragon.000webhostapp.com/AnxyApp/Dairy.php?userID=' + id,
       );
       xhttp.send();
     } catch (error) {}
   };
-
-  useEffect(() => {
-    getData();
-    getData2();
-  }, [ID]);
-
-  const get_and_SaveIncidencias = () => {
-    //ya guardado el array comprueba que esta pasando
-    setincidencias(0);
-    let cont = 0;
-    dairyItems.map((item, index) => {
-      let comprobar = item.Content.toLowerCase();
-      console.log(comprobar);
-      if (
-        comprobar.includes('suici') ||
-        comprobar.includes('mata') ||
-        comprobar.includes('muer') ||
-        comprobar.includes('triste') ||
-        comprobar.includes('desaparecer') ||
-        comprobar.includes('peligro')
-      ) {
-        cont = cont + 1;
-      }
-    });
-    console.log('tiene ', cont);
-    if (cont >= 1) {
-      setincidencias(cont);
-      //solo la mandare a llamar cuando logeen
-      let userIncidencias = {
-        cantidad: cont,
-      };
-      storeData(userIncidencias, '@UserReport');
-      console.log('Info Almacenada', {userIncidencias});
-    }
-    //significa que si hay incidencias
-  };
+  
+ 
 
   const handleAdddairy = () => {
     {
@@ -152,14 +104,14 @@ const FullDairy = props => {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         console.log(xhttp.responseText);
-        getData2();
+        getData();
         setOpen(false);
       }
     };
     xhttp.open(
       'GET',
       'https://spoiledragon.000webhostapp.com/AnxyApp/sendDairy.php?userID=' +
-        ID +
+        id +
         '&content=' +
         dairy +
         '&date=' +

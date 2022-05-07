@@ -4,69 +4,66 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
-  TextInput,
   TouchableOpacity,
   Modal,
+  KeyboardAvoidingViewBase,
+  KeyboardAvoidingView,
+  TextInput,
 } from 'react-native';
-import {Tab, Text, TabView, SpeedDial, Avatar} from 'react-native-elements';
+import {
+  Tab,
+  Text,
+  TabView,
+  SpeedDial,
+  Avatar,
+  Divider,
+} from 'react-native-elements';
 import React, {useState, useEffect} from 'react';
-import Profile from '../component/ProfileCard';
+
 import Estadistica from '../component/Estadistica';
-import Alerta from '../component/Alerta';
-import Alerta2 from '../component/Alerta2';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import minIA from '../component/MinIA';
+
 import MinIA from '../component/MinIA';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Home = ({navigation, route}) => {
   const [index, setIndex] = React.useState(0);
-  const {pasaruser} = route.params;
-  //ESTE YA LO TENGO DEL LOGIN
-  const [USER, setUSER] = React.useState(pasaruser);
-  //lo que me regresa el php
-  const [ID, setID] = React.useState(0);
-  const [NAME, setNAME] = React.useState('');
-  const [AGE, setAGE] = React.useState('');
-  const [BIBLIOGRAFIA, setBIBLIOGRAFIA] = React.useState('');
-  const [PHOTO, setPHOTO] = React.useState(
-    'spoiledragon.000webhostapp.com/Imagenes/Avatar.jpg',
-  );
+  const {user} = route.params;
+  const {photo} = route.params;
+  const {age} = route.params;
+  const {id} = route.params;
+  const {name} = route.params;
+  const {bibliografia} = route.params;
 
+
+  //ESTE YA LO TENGO DEL LOGIN
+  //lo que me regresa el php pero me lo paso desde LOGIN
+  const [USER, setUSER] = React.useState(user);
+  const [ID, setID] = React.useState(id);
+  const [NAME, setNAME] = React.useState(name);
+  const [AGE, setAGE] = React.useState(age);
+  const [BIBLIOGRAFIA, setBIBLIOGRAFIA] = React.useState(bibliografia);
+  const [PHOTO, setPHOTO] = React.useState(photo);
+  //MODAL
   const [modalVisible, setModalVisible] = useState(false);
   const [open, setOpen] = React.useState(false);
   //aqui deberia traer las coasas
-  const TraeDatos = () => {
-    try {
-      AsyncStorage.getItem('@userinfo').then(value => {
-        if (value != null) {
-          let Data = JSON.parse(value);
-          setID(Data.id);
-          setAGE(Data.age);
-          setNAME(Data.name);
-          if (Data.photo != '') {
-            setPHOTO(Data.photo);
-          } else {
-            setPHOTO(
-              'https://us.123rf.com/450wm/thesomeday123/thesomeday1231712/thesomeday123171200009/91087331-icono-de-perfil-de-avatar-predeterminado-para-hombre-marcador-de-posición-de-foto-gris-vector-de-ilu.jpg?ver=6',
-            );
-          }
-          setBIBLIOGRAFIA(Data.bibilografia);
-          //console.log('ID DE HomePage', Data.id);
-        }
-      });
 
-      //Fin del try
-    } catch (e) {
-      //console.log(e);
-    }
+  //Funciones Para Navegar
+  const gotoDairy = () => {
+    navigation.push('Dairy', {id: ID});
   };
-
-  //Funciones Mas complejas
+  const gotoGoals = () => {
+    console.log('mandando', GoalArray);
+    navigation.push('Goals', {Array: GoalArray});
+  };
+  const gotoMeds = () => {
+    navigation.push('Meds', {id: ID});
+  };
 
   //FUNCIONES ESPECIALES
   useEffect(() => {
-    TraeDatos();
-  }, [USER]);
+    console.log(GoalArray);
+  }, []);
 
   //const {nicknameValue} = route.params;
   return (
@@ -104,9 +101,6 @@ const Home = ({navigation, route}) => {
                   name={NAME}
                   age={AGE}
                   photo={PHOTO}
-                  bar1={0.3}
-                  bar2={0.1}
-                  bar3={1}
                 />
               </TouchableOpacity>
               <Modal
@@ -116,7 +110,6 @@ const Home = ({navigation, route}) => {
                 onRequestClose={() => setModalVisible(false)}>
                 <View style={styles.modalView}>
                   {/*AQUI VA TODO EL CONTENIDO DEL MODAL*/}
-
                   <Avatar
                     size={60}
                     rounded
@@ -152,16 +145,51 @@ const Home = ({navigation, route}) => {
                   </SpeedDial>
                 </View>
               </Modal>
-              <Alerta Medicamento={'Chochitos'} Hora={22} />
-              <Alerta2 Mensaje={'Olvidaste Drogarte'} />
+
               <Estadistica Cantidad={0.3} />
             </ScrollView>
+            {/*AQUI HARE UN TAB NAV TODO FEO */}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.Nav}>
+              {/*aqui pondre los iconos */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  height: 50,
+                  alignItems: 'center',
+                }}>
+                {/*Navegacion a Diarios*/}
+                <TouchableOpacity onPress={() => gotoDairy()}>
+                  <View>
+                    <Icon name="book-outline" color="black" size={25} />
+                  </View>
+                </TouchableOpacity>
+                <Divider orientation="vertical" margin={10} />
+                {/*Navegacion a Metas*/}
+                <TouchableOpacity onPress={() => gotoGoals()}>
+                  <View>
+                    <Icon
+                      name="checkmark-done-outline"
+                      color="black"
+                      size={25}
+                    />
+                  </View>
+                </TouchableOpacity>
+                <Divider orientation="vertical" margin={10} />
+                <TouchableOpacity onPress={() => gotoMeds()}>
+                  <View>
+                    <Icon name="medkit-outline" color="black" size={25} />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
           </SafeAreaView>
         </TabView.Item>
         {/* FIN DEL HOME*/}
         <TabView.Item style={{backgroundColor: '#F9F9F9', width: '100%'}}>
           {/* GOALS*/}
-          <MinIA/>
+          <MinIA />
         </TabView.Item>
       </TabView>
     </>
@@ -193,7 +221,8 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    width: Dimensions.get('screen').width - 30,
+    height: Dimensions.get('screen').height - 100,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -230,6 +259,18 @@ const styles = StyleSheet.create({
     fontFamily: 'sans-serif',
     fontWeight: 'bold',
     letterSpacing: 1.5,
+  },
+  Nav: {
+    position: 'absolute',
+    bottom: -1,
+    width: '99%',
+    backgroundColor: '#FFF',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#fff',
+    borderRadius: 20,
   },
 });
 
